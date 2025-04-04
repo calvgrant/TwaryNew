@@ -10,7 +10,18 @@ module.exports = (req, res) => {
       return;
     }
 
-    const imageUrls = JSON.parse(data);  // Parse the JSON data into an array
-    res.status(200).json(imageUrls);    // Return the image URLs as a JSON array
+    try {
+      const imageUrls = JSON.parse(data);
+      if (!Array.isArray(imageUrls) || imageUrls.length === 0) {
+        return res.status(404).json({ message: 'No image URLs found' });
+      }
+
+      const randomIndex = Math.floor(Math.random() * imageUrls.length);
+      const randomUrl = imageUrls[randomIndex];
+
+      res.status(200).json({ url: randomUrl });
+    } catch (e) {
+      res.status(500).json({ message: 'Error parsing JSON data' });
+    }
   });
 };
